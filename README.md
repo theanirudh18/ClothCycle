@@ -70,3 +70,29 @@ This project includes:
 
 ## 📁 Folder Structure
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+## ⚙️ Installation Guide
+
+### **1️⃣ Clone the Repository**
+```bash
+git clone https://github.com/YOUR_USERNAME/ClothCycle.git
+cd ClothCycle
+
+
