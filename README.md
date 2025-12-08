@@ -87,25 +87,12 @@ ClothCycle/
 
 ---
 
+---
+
 ## ⚙️ Installation Guide
 
-### **1️⃣ Clone the Repository**
+### 🔹 1️⃣ Clone the Repository
+
 ```bash
 git clone https://github.com/YOUR_USERNAME/ClothCycle.git
 cd ClothCycle
-
-
-
-🔐 Authentication
-
-ClothCycle uses:
-
-JWT tokens
-
-Bcrypt hashed passwords
-
-Secure login & signup
-
-📄 License
-
-MIT License © 2025 ANIRUDH SINGH
