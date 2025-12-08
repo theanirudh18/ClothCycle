@@ -96,4 +96,12 @@ cd ClothCycle
 
 
 
+🔐 Authentication
 
+ClothCycle uses:
+
+JWT tokens
+
+Bcrypt hashed passwords
+
+Secure login & signup
