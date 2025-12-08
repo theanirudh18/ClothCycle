@@ -96,6 +96,7 @@ ClothCycle/
 ```bash
 git clone https://github.com/YOUR_USERNAME/ClothCycle.git
 cd ClothCycle
+```
 
 
 ## 🛠️ Backend Setup
@@ -105,4 +106,27 @@ cd ClothCycle
 ```bash
 cd backend
 npm install
+```
 
+🔹 3️⃣ Configure Environment Variables
+
+Create a .env file:
+PORT=5001
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=
+DB_NAME=clothcycle
+JWT_SECRET=yourSecretKey
+
+🔹 4️⃣ Import Database Schema
+```bash
+mysql -u root -p clothcycle < backend/schema.sql
+```
+🔹 5️⃣ Start Backend Server
+```bash
+npm start
+```
+
+📄 License
+
+MIT License © 2025 ANIRUDH SINGH
