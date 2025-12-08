@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ClothCycle — Donate Clothes. Share Warmth.</title>
+  <!-- Leaflet CSS (for real map display) -->
+<!-- Leaflet (fixed: no integrity attribute) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- html5-qrcode for scanner -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+
+
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar">
+    <div class="wrap">
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="brand" onclick="navigateTo('home')">
+        <div class="logo">♻</div>
+        <div class="brand-text">
+          <div class="title">ClothCycle</div>
+          <div class="subtitle">Donate • Verify • Impact</div>
+        </div>
+      </div>
+
+      <nav class="main-nav" id="mainNav" aria-label="Main">
+        <a href="#" data-nav="home" class="nav-link">Home</a>
+        <a href="#" data-nav="bins" class="nav-link">Find Bins</a>
+        <a href="#" data-nav="scan" class="nav-link">Scan QR</a>
+        <a href="#" data-nav="impact" class="nav-link">Impact</a>
+        <a href="#" data-nav="about" class="nav-link">About</a>
+        <a href="#" data-nav="customer-care" class="nav-link">Customer Care</a>
+        <a href="#" data-nav="login" id="nav-auth" class="nav-link user-link">Sign In</a>
+        
+
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- LOGIN PAGE -->
+    <section id="login" class="screen" style="display:none;">
+      <div class="wrap">
+        <div class="login-container">
+          <div class="login-card">
+            <div class="login-header">
+              <div class="login-logo">♻</div>
+              <h2 class="login-title">Welcome to ClothCycle</h2>
+              <p class="login-subtitle">Sign in to track your donations and earn eco-points</p>
+            </div>
+
+            <div class="login-tabs">
+             <button class="tab-btn active" type="button" onclick="switchTab('signin')">Sign In</button>
+             <button class="tab-btn" type="button" onclick="switchTab('signup')">Sign Up</button>
+
+            </div>
+
+            <!-- Sign In Form -->
+            <form id="loginPageForm" class="auth-form active" onsubmit="handleLoginPage(event)">
+              <div class="form-group">
+                <label for="login_email">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  Email
+                </label>
+                <input id="login_email" type="email" placeholder="your@email.com" required>
+              </div>
+
+              <div class="form-group">
+                <label for="login_pass">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  Password
+                </label>
+                <input id="login_pass" type="password" placeholder="••••••••" required>
+              </div>
+
+              <div class="form-options">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="remember_me">
+                  <span>Remember me</span>
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-large btn-animated">Sign In</button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signupPageForm" class="auth-form" style="display:none;" onsubmit="handleSignupPage(event)">
+              <div class="form-group">
+                <label for="signup_name">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  Full Name
+                </label>
+                <input id="signup_name" type="text" placeholder="John Doe" required>
+              </div>
+
+              <div class="form-group">
+                <label for="signup_email">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                  Email
+                </label>
+                <input id="signup_email" type="email" placeholder="your@email.com" required>
+              </div>
+
+              <div class="form-group">
+                <label for="signup_pass">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                  Password
+                </label>
+                <input id="signup_pass" type="password" placeholder="Enter Your Password" required>
+              </div>
+
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" required>
+                  <span>I agree to the Terms & Conditions</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-large btn-animated">Create Account</button>
+            </form>
+
+            <div class="social-divider">
+              <span>or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+              <button class="social-btn" onclick="alert('Google login coming soon!')">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Google
+              </button>
+              <button class="social-btn" onclick="alert('Facebook login coming soon!')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                Facebook
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERO / HOME -->
+    <section id="home" class="screen">
+      <div class="wrap">
+        <!-- Hero Section -->
+        <div class="hero-grid">
+          <div class="hero-card card--elevate">
+            <div class="hero-badge">
+              <span>🌍 Making Impact Together</span>
+            </div>
+            <h1 class="hero-h">Donate Clothes. <span class="accent">Share Warmth.</span></h1>
+            <p class="lead">ClothCycle makes clothing donation verifiable and rewarding. Find a bin, scan the QR, and earn eco-points while making a real difference in people's lives.</p>
+            <div class="cta-row">
+              <button class="btn btn-primary" onclick="navigateTo('bins')">🗺️ Find Nearest Bin</button>
+              <button class="btn btn-ghost" onclick="navigateTo('donate')">💚 Donate Now</button>
+            </div>
+
+            <div class="stats-row">
+              <div class="stat">
+                <div class="stat-icon">♻️</div>
+                <div class="stat-num" id="cnt-kg">0</div>
+                <div class="stat-label">kg recycled</div>
+              </div>
+              <div class="stat">
+                <div class="stat-icon">👨‍👩‍👧‍👦</div>
+                <div class="stat-num" id="cnt-fam">0</div>
+                <div class="stat-label">families helped</div>
+              </div>
+              <div class="stat">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-num" id="cnt-vol">0</div>
+                <div class="stat-label">volunteers</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-art card--elevate">
+            <div class="map-hero">
+              <div class="map-hero-top">
+                <div class="map-title">🗺️ Nearby Donation Bins</div>
+                <div><button class="btn small" onclick="navigateTo('bins')">Open Map</button></div>
+              </div>
+              <div class="map-box">
+                <div class="map-placeholder">
+                  <div class="map-placeholder-icon">📍</div>
+                  <div class="map-placeholder-text">Interactive Map Preview</div>
+                  <div class="map-placeholder-subtext">Click above to explore nearby bins</div>
+                </div>
+              </div>
+              <div class="map-cta">
+                <div class="muted">Quick glance at local bins • Click <strong>Open Map</strong> to view all locations</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-section">
+          <h2 class="section-title">Why Choose ClothCycle?</h2>
+          <div class="features-grid">
+            <div class="feature-card card--elevate">
+              <div class="feature-icon">🔍</div>
+              <h3>Verified Donations</h3>
+              <p>Every donation is tracked and verified through QR code scanning, ensuring transparency and accountability.</p>
+            </div>
+            <div class="feature-card card--elevate">
+              <div class="feature-icon">🏆</div>
+              <h3>Earn Rewards</h3>
+              <p>Collect eco-points for each donation and unlock exclusive badges as you contribute to sustainability.</p>
+            </div>
+            <div class="feature-card card--elevate">
+              <div class="feature-icon">🌱</div>
+              <h3>Environmental Impact</h3>
+              <p>Track your carbon footprint reduction and see the real-time impact of your contributions.</p>
+            </div>
+            <div class="feature-card card--elevate">
+              <div class="feature-icon">📱</div>
+              <h3>Easy to Use</h3>
+              <p>Simple three-step process: Find a bin, scan QR code, and drop off your donations.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works">
+          <h2 class="section-title">How It Works</h2>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <div class="step-icon">🗺️</div>
+              <h4>Find a Bin</h4>
+              <p>Use our interactive map to locate the nearest donation bin in your area.</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <div class="step-icon">📱</div>
+              <h4>Scan QR Code</h4>
+              <p>Scan the unique QR code on the bin using your phone's camera.</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <div class="step-icon">👕</div>
+              <h4>Donate & Earn</h4>
+              <p>Drop your clothes and instantly earn eco-points and badges!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section card--elevate">
+          <h2>Ready to Make an Impact?</h2>
+          <p>Join thousands of donors making a difference in their communities</p>
+          <div class="cta-buttons">
+            <button class="btn btn-primary btn-large" onclick="navigateTo('login')">Get Started Free</button>
+            <button class="btn btn-ghost btn-large" onclick="navigateTo('about')">Learn More</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIND BINS -->
+    <section id="bins" class="screen" style="display:none;">
+      <div class="wrap">
+        <div class="bins-header-main">
+          <h2 class="section-title">Find Donation Bins Near You</h2>
+          <p class="lead">Locate nearby bins, check capacity, and get directions</p>
+        </div>
+
+        <div class="grid-2">
+          <aside class="bins-list card--panel">
+            <div class="bins-header">
+              <h3>📍 Nearby Bins</h3>
+              <div class="bins-controls">
+                
+                <button class="btn small" onclick="centerOnUserLocation()">📍 My Location</button>
+              </div>
+            </div>
+            <div id="binsList" class="bins-scroll"></div>
+            <div class="list-footer">
+              <small class="muted"><span id="bins-count">0</span> bins found</small>
+            </div>
+          </aside>
+
+          <div class="map-area card--panel">
+            <div class="map-toolbar">
+              <div class="map-info">
+                <span class="map-icon">🗺️</span>
+                <span>Interactive Map</span>
+              </div>
+              <button class="btn small btn-ghost" onclick="loadBins()">🔄 Refresh</button>
+            </div>
+            <div class="map-large" id="mapContainer">
+              <div class="map-background"></div>
+              <div id="mapMarkers" class="map-markers-layer"></div>
+              <div class="map-legend">
+                <div class="legend-item"><span class="legend-dot available"></span>Available</div>
+                <div class="legend-item"><span class="legend-dot full"></span>Nearly Full</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+
+    <!-- SCAN -->
+    
+<section id="scan" class="screen" style="display:none;">
+  <div class="wrap">
+    <div class="scanner-wrap card--panel">
+
+      <div class="scanner-left">
+        <h2 class="section-title">Scan Bin QR</h2>
+        <p class="muted">Point your camera at the QR code on the donation bin to verify and record your donation.</p>
+
+        <div class="camera-frame" id="qr-reader">
+          <div class="scan-frame"></div>
+        </div>
+
+        <div class="camera-actions">
+          <button id="start-camera" class="btn btn-gradient" onclick="startQRScanner()">Start Scanner</button>
+          <button class="btn btn-outline" onclick="stopQRScanner()">Stop Scanner</button>
+          <button class="btn btn-ghost" onclick="simulateScanPrompt()">Simulate Scan</button>
+        </div>
+
+        <div class="scan-tips">
+          <strong>Tip:</strong> Hold your phone steady and ensure the QR code is well-lit. 
+          If the scanner doesn't work, use 'Simulate Scan' to test with bin codes.
+        </div>
+      </div>
+
+      <div class="important-note card-note">
+        <strong>Security:</strong> QR codes are verified before recording donations. Each successful scan earns you eco-points!
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+    <!-- IMPACT -->
+    <section id="impact" class="screen" style="display:none;">
+      <div class="wrap">
+        <div class="impact-hero card--elevate">
+          <h2 class="section-title">Our Global Impact</h2>
+          <p class="lead">Together, we're making a difference in the world through sustainable clothing donation and recycling.</p>
+        </div>
+
+        <div class="impact-stats-grid">
+          <div class="impact-stat-card card--elevate">
+            <div class="impact-icon">♻️</div>
+            <div class="impact-number" id="impact-kg">0</div>
+            <div class="impact-label">Kilograms Recycled</div>
+            <div class="impact-desc">Clothes saved from landfills</div>
+          </div>
+
+          <div class="impact-stat-card card--elevate">
+            <div class="impact-icon">👨‍👩‍👧‍👦</div>
+            <div class="impact-number" id="impact-families">0</div>
+            <div class="impact-label">Families Helped</div>
+            <div class="impact-desc">Lives touched through donations</div>
+          </div>
+
+          <div class="impact-stat-card card--elevate">
+            <div class="impact-icon">🌍</div>
+            <div class="impact-number" id="impact-co2">0</div>
+            <div class="impact-label">CO2 Saved (kg)</div>
+            <div class="impact-desc">Carbon footprint reduced</div>
+          </div>
+
+          <div class="impact-stat-card card--elevate">
+            <div class="impact-icon">👥</div>
+            <div class="impact-number" id="impact-volunteers">0</div>
+            <div class="impact-label">Active Volunteers</div>
+            <div class="impact-desc">Community heroes</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:30px">
+          <div class="card--panel">
+            <h3>Environmental Impact</h3>
+            <div class="impact-chart">
+              <div class="chart-item">
+                <div class="chart-label">Water Saved</div>
+                <div class="chart-bar">
+                  <div class="chart-fill" style="width:85%">85%</div>
+                </div>
+              </div>
+              <div class="chart-item">
+                <div class="chart-label">Energy Conserved</div>
+                <div class="chart-bar">
+                  <div class="chart-fill" style="width:72%">72%</div>
+                </div>
+              </div>
+              <div class="chart-item">
+                <div class="chart-label">Waste Diverted</div>
+                <div class="chart-bar">
+                  <div class="chart-fill" style="width:94%">94%</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;padding:16px;background:rgba(56,181,138,0.1);border-radius:12px;border-left:4px solid var(--green)">
+              <strong>🌱 Did you know?</strong>
+              <p style="margin:8px 0 0;color:var(--muted);font-size:14px">Every kilogram of clothing recycled saves approximately 20kg of CO2 emissions and 6,000 liters of water!</p>
+            </div>
+          </div>
+
+          <div class="card--panel">
+            <h3>Community Leaderboard</h3>
+           
+  <div id="topDonorDetails"></div>
+<div id="topDonorCard" class="top-donor-card" style="margin-bottom:18px">
+  <div class="trophy-icon">🏆</div>
+  <h2>Top Donor This Month</h2>
+  <p class="muted small">Highest verified donation (by weight)</p>
+  <div id="topDonorDetails"></div>
+</div>
+
+<h3 style="margin-top:6px">All Contributors</h3>
+<div id="impactLeaderboard" class="leaderboard-list"></div>
+
+<div id="leaderboardToggleBox" style="text-align:center; margin-top:15px;">
+  <button id="toggleLeaderboardBtn" class="btn btn-outline" onclick="toggleLeaderboard()">
+    See More
+  </button>
+</div>
+
+
+
+            <div style="margin-top:16px;text-align:center">
+              <button class="btn btn-primary" onclick="navigateTo('donate')">Join the Movement</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+          <!-- PROFILE SECTION -->
+<section id="profile" class="screen" style="display:none;">
+  <div class="wrap">
+
+    <!-- TOP PROFILE CARD -->
+    <div class="profile-header card--panel">
+      <div class="profile-left">
+        <div class="profile-avatar" id="profileAvatar">A</div>
+        <div>
+          <h3 id="profileName">User Name</h3>
+          <p id="profileEmail" class="muted">email@example.com</p>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="signOut()">Sign Out</button>
+    </div>
+
+    <div class="grid-2">
+
+      <!-- DONATION HISTORY CARD -->
+      <div class="profile-card card--panel">
+        <h3 class="section-title">Donation History</h3>
+        <select id="donationMonthFilter" class="month-filter"></select>
+        <div id="donationHistory" class="donation-list"></div>
+      </div>
+
+      <!-- IMPACT CARD -->
+      <div class="profile-card card--panel">
+        <h3 class="section-title">Impact Summary</h3>
+
+        <div class="impact-stats">
+          <div class="impact-row">
+            <span>Total kg:</span>
+            <strong id="profileKg">0</strong>
+          </div>
+
+          <div class="impact-row">
+            <span>Families helped:</span>
+            <strong id="profileFam">0</strong>
+          </div>
+
+          <div class="impact-row">
+            <span>Eco-points:</span>
+            <strong id="profilePoints">0</strong>
+          </div>
+        </div>
+
+        <h3 class="section-title" style="margin-top:16px;">Badges</h3>
+        <div id="profileBadges" class="badges-container"></div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+    <!-- DONATE -->
+    <section id="donate" class="screen" style="display:none;">
+      <div class="wrap">
+        <div class="donate-panel card--panel">
+          <h2 class="section-title">Donate / Volunteer</h2>
+          <form id="donateForm" onsubmit="handleDonate(event)" class="donate-form">
+            <label>Name<input id="d_name" required></label>
+            <label>Email<input id="d_email" type="email" required></label>
+            <label>Location<input id="d_location" required></label>
+            
+            <label>Estimated items<input id="d_items" type="number" min="1" required></label>
+            <label class="check"><input id="d_pickup" type="checkbox"> Request pickup</label>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">Submit Request</button>
+              <button class="btn btn-ghost" type="button" onclick="navigateTo('home')">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="screen" style="display:none;">
+      <div class="wrap">
+        <div class="about-hero card--elevate">
+          <h2 class="section-title">About ClothCycle</h2>
+          <p class="lead">We're on a mission to make clothing donation verifiable, rewarding, and impactful for everyone.</p>
+        </div>
+
+        <div class="grid-2" style="margin-top:30px">
+          <div class="card--panel">
+            <h3>🎯 Our Mission</h3>
+            <p>ClothCycle is revolutionizing the way people donate clothes by making every contribution transparent and rewarding. We believe that every piece of clothing can make a difference, and we're committed to ensuring your donations reach those who need them most.</p>
+            
+            <h3 style="margin-top:24px">💡 How It Works</h3>
+            <ol style="padding-left:20px;line-height:1.8">
+              <li>Find a nearby donation bin using our interactive map</li>
+              <li>Scan the QR code on the bin to verify your donation</li>
+              <li>Earn eco-points for every contribution</li>
+              <li>Track your impact on the environment and community</li>
+            </ol>
+          </div>
+
+          <div class="card--panel">
+            <h3>✨ Our Values</h3>
+            <div class="value-item">
+              <strong>🌍 Sustainability</strong>
+              <p>Reducing textile waste and promoting circular fashion</p>
+            </div>
+            <div class="value-item">
+              <strong>🤝 Community</strong>
+              <p>Building connections through shared purpose</p>
+            </div>
+            <div class="value-item">
+              <strong>🔍 Transparency</strong>
+              <p>Every donation is tracked and verified</p>
+            </div>
+            <div class="value-item">
+              <strong>🏆 Recognition</strong>
+              <p>Celebrating your contributions with rewards</p>
+            </div>
+
+            <div style="margin-top:24px;padding:20px;background:var(--gr1);color:#fff;border-radius:14px;text-align:center">
+              <h4 style="margin:0 0 8px">Join Our Community</h4>
+              <p style="margin:0 0 16px;opacity:0.9">Be part of the sustainable fashion movement</p>
+              <button class="btn" style="background:#fff;color:#0f1724" onclick="navigateTo('login')">Get Started</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUSTOMER CARE -->
+    <section id="customer-care" class="screen" style="display:none;">
+      <div class="wrap">
+        <div class="care-hero card--elevate">
+          <h2 class="section-title">Customer Care</h2>
+          <p class="lead">We're here to help! Find answers to common questions or get in touch with our support team.</p>
+        </div>
+
+        <div class="grid-2" style="margin-top:30px">
+          <div class="card--panel">
+            <h3>💬 Frequently Asked Questions</h3>
+            
+            <div class="faq-item">
+              <strong>How do I donate clothes?</strong>
+              <p>Find a nearby bin on our map, bring your clean clothes, and scan the QR code to record your donation.</p>
+            </div>
+
+            <div class="faq-item">
+              <strong>What items can I donate?</strong>
+              <p>We accept clean, gently-used clothing for men, women, and children. Shoes, bags, and accessories are also welcome!</p>
+            </div>
+
+            <div class="faq-item">
+              <strong>How do eco-points work?</strong>
+              <p>You earn 10 points per item donated. Points can be redeemed for rewards and unlock special badges.</p>
+            </div>
+
+            <div class="faq-item">
+              <strong>Is my donation tax-deductible?</strong>
+              <p>Yes! We provide donation receipts for tax purposes. Check your profile for your donation history.</p>
+            </div>
+
+            <div class="faq-item">
+              <strong>Where do donated clothes go?</strong>
+              <p>Clothes are sorted and distributed to local charities, shelters, and families in need. Some items are recycled into new materials.</p>
+            </div>
+          </div>
+
+          <div class="card--panel">
+            <h3>📧 Contact Us</h3>
+            
+            <div class="contact-info">
+              <div class="contact-item">
+                <strong>📧 Email</strong>
+                <p><a href="mailto:support@clothcycle.com">support@clothcycle.com</a></p>
+              </div>
+
+              <div class="contact-item">
+                <strong>📞 Phone</strong>
+                <p><a href="tel:+1234567890">+1 (234) 567-890</a></p>
+              </div>
+
+              <div class="contact-item">
+                <strong>🕒 Hours</strong>
+                <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM</p>
+              </div>
+            </div>
+
+            <div style="margin-top:24px">
+              <h4>Send us a message</h4>
+              <form class="contact-form" onsubmit="handleContactForm(event)">
+                <input type="text" placeholder="Your Name" required style="width:100%;margin-bottom:12px;padding:12px;border-radius:10px;border:2px solid rgba(56,181,138,0.2)">
+                <input type="email" placeholder="Your Email" required style="width:100%;margin-bottom:12px;padding:12px;border-radius:10px;border:2px solid rgba(56,181,138,0.2)">
+                <textarea placeholder="Your Message" required style="width:100%;margin-bottom:12px;padding:12px;border-radius:10px;border:2px solid rgba(56,181,138,0.2);min-height:100px;resize:vertical"></textarea>
+                <button type="submit" class="btn btn-primary" style="width:100%">Send Message</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div><strong>ClothCycle</strong> © 2025 — Built for demo</div>
+      <div class="muted">Designed: B-SIMPLE gradient · Prototype UI</div>
+    </div>
+  </footer>
+
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="modal" style="display:none;">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close" onclick="closeAuth()">✕</button>
+      <div class="auth-grid">
+        <div class="auth-left">
+          <h3>Join ClothCycle</h3>
+          <p class="muted">Create an account to track donations and earn eco-points.</p>
+        </div>
+
+        <div class="auth-right">
+          <form id="signupForm" onsubmit="handleSignup(event)">
+            <h4>Create account</h4>
+            <label>Name<input id="su_name" required></label>
+            <label>Email<input id="su_email" type="email" required></label>
+            <label>Password<input id="su_pass" type="password" required></label>
+            <div class="auth-actions">
+            <button type="submit" class="btn btn-primary">Create account</button>
+ 
+              <button type="button" class="btn btn-ghost" onclick="showLogin()">Have an account? Login</button>
+            </div>
+          </form>
+
+          <form id="loginForm" style="display:none" onsubmit="handleLogin(event)">
+            <h4>Login</h4>
+            <label>Email<input id="li_email" type="email" required></label>
+            <label>Password<input id="li_pass" type="password" required></label>
+            <div class="auth-actions">
+              <button class="btn btn-primary">Login</button>
+              <button type="button" class="btn btn-ghost" onclick="showSignup()">Create account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFETTI -->
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
