@@ -95,10 +95,5 @@ git clone https://github.com/YOUR_USERNAME/ClothCycle.git
 cd ClothCycle
 
 
-### **Backend Setup**
-Install Dependencies
-```bash
-cd backend
-npm install
 
 
