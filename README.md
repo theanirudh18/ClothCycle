@@ -70,21 +70,20 @@ This project includes:
 
 ## 📁 Folder Structure
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ClothCycle/
+├── backend/
+│ ├── server.js
+│ ├── routes/
+│ ├── controllers/
+│ ├── config/
+│ ├── package.json
+│ └── schema.sql
+│
+└── frontend/
+├── index.html
+├── script.js
+├── style.css
+└── assets/
 
 ---
 
