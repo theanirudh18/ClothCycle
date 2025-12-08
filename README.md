@@ -105,3 +105,7 @@ JWT tokens
 Bcrypt hashed passwords
 
 Secure login & signup
+
+📄 License
+
+MIT License © 2025 ANIRUDH SINGH
