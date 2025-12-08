@@ -96,5 +96,5 @@ ClothCycle/
 ```bash
 git clone https://github.com/YOUR_USERNAME/ClothCycle.git
 cd ClothCycle
-```bash
+
 
