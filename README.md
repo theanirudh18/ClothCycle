@@ -111,12 +111,14 @@ npm install
 🔹 3️⃣ Configure Environment Variables
 
 Create a .env file:
+```bash
 PORT=5001
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=
 DB_NAME=clothcycle
 JWT_SECRET=yourSecretKey
+```
 
 🔹 4️⃣ Import Database Schema
 ```bash
