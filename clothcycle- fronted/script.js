@@ -600,14 +600,14 @@ async function loadProfileToUI() {
 // BADGE SYSTEM
 // ----------------------
 // ----------------------
-// BADGE SYSTEM
+// BADGE SYSTEM (FINAL FIX)
 // ----------------------
 const badgeContainer = safeGet("profileBadges");
 badgeContainer.innerHTML = "";
 
-const kg = totalKg; // total donated weight
+const kg = totalKg;
 
-// All badges
+// BADGE DEFINITIONS WITH STABLE KEYS
 const ALL_BADGES = [
   { key: "beginner",   name: "Beginner",    icon: "🟢", min: 1 },
   { key: "helper",     name: "Helper",      icon: "🔵", min: 5 },
@@ -617,75 +617,38 @@ const ALL_BADGES = [
   { key: "super",      name: "Super Donor", icon: "👑", min: 100 }
 ];
 
-// READ LAST UNLOCKED BADGE FROM BROWSER
-let lastSavedBadge = localStorage.getItem("lastBadgeUnlocked") || "";
+// READ LAST UNLOCKED BADGE KEY
+let lastBadgeKey = localStorage.getItem("lastBadgeUnlockedKey") || "";
 
-// Detect NEW unlock
-let latestUnlockedBadge = null;
+// FIND THE HIGHEST BADGE UNLOCKED
+let highestKeyUnlocked = "";
+let newBadgeUnlocked = null;
 
 ALL_BADGES.forEach(b => {
   const earned = kg >= b.min;
 
-  // Detect if this badge is newly unlocked
-  if (earned && b.name !== lastSavedBadge) {
-    latestUnlockedBadge = b;
-  }
-
-  // Build badge UI
+  // Rendering UI
   const div = document.createElement("div");
   div.className = "badge-item " + (earned ? "unlocked" : "locked");
-
-  div.innerHTML = `
-    <div class="badge-icon badge-${b.key}">
-      ${earned ? (b.icon === "●" ? "" : b.icon) : "🔒"}
-    </div>
-    ${b.name}
-  `;
-
+  div.innerHTML = `<span>${earned ? b.icon : "🔒"}</span> ${b.name}`;
   badgeContainer.appendChild(div);
+
+  // Detect newly unlocked badge
+  if (earned) {
+    highestKeyUnlocked = b.key;
+  }
 });
 
-// SHOW POPUP ONLY FOR NEWLY UNLOCKED BADGES
-if (latestUnlockedBadge) {
-  showBadgePopup(latestUnlockedBadge.name, latestUnlockedBadge.icon);
-  localStorage.setItem("lastBadgeUnlocked", latestUnlockedBadge.name);
+// SHOW POPUP ONLY IF THE BADGE IS NEW
+if (highestKeyUnlocked && highestKeyUnlocked !== lastBadgeKey) {
+
+  const badge = ALL_BADGES.find(b => b.key === highestKeyUnlocked);
+
+  showBadgePopup(badge.name, badge.icon);
+
+  // Save KEY instead of name (stable)
+  localStorage.setItem("lastBadgeUnlockedKey", highestKeyUnlocked);
 }
-
-// ----------------------
-// PROGRESS BAR FOR NEXT BADGE
-// ----------------------
-document.querySelectorAll(".all-badges-msg").forEach(e => e.remove());
-
-const impactCard = document.querySelector(".profile-card:last-child");
-
-// Find next badge to unlock
-const nextBadge = ALL_BADGES.find(b => b.min > kg);
-
-let progressHTML = "";
-
-if (nextBadge) {
-  const progressPercent = Math.min(100, (kg / nextBadge.min) * 100);
-
-  progressHTML = `
-    <div style="margin-top:20px;">
-      <strong>Next Badge: ${nextBadge.name} (${nextBadge.min}kg)</strong>
-      <div class="progress-container">
-        <div class="progress-bar" style="width:${progressPercent}%"></div>
-      </div>
-    </div>
-  `;
-} else {
-  // User has all badges → show ONLY one message
-  progressHTML = `
-    <div class="all-badges-msg" style="margin-top:16px;font-weight:600;">
-      🎉 You have unlocked all badges!
-    </div>
-  `;
-}
-
-// Insert progress bar/message
-impactCard.insertAdjacentHTML("beforeend", progressHTML);
-
 
   } catch (err) {
     console.error("Profile load failed:", err);
